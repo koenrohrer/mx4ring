@@ -13,7 +13,7 @@ _(demo GIF placeholder)_
 ## Quick start
 
 ```bash
-git clone <repo-url> mx4ring && cd mx4ring
+git clone https://github.com/koenrohrer/mx4ring.git && cd mx4ring
 ./setup.sh        # system packages, venv, udev rule, GNOME extension
 ```
 
