@@ -7,8 +7,7 @@ cursor, fires the haptic motor, and can remap other buttons to key chords or
 shell commands. Tested on GNOME (Wayland); a standalone GTK fallback exists for
 wlroots/KDE.
 
-<!-- TODO: drop a demo GIF here, e.g. ![mx4ring demo](docs/demo.gif) -->
-_(demo GIF placeholder)_
+![mx4ring demo](docs/demo.gif)
 
 ## Quick start
 
