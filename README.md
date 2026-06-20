@@ -149,6 +149,7 @@ create the unit using **your** repo path:
 [Unit]
 Description=mx4ring daemon
 [Service]
+Environment=PYTHONUNBUFFERED=1
 ExecStart=/absolute/path/to/mx4ring/.venv/bin/python /absolute/path/to/mx4ring/mx4d.py
 Restart=on-failure
 [Install]

@@ -123,6 +123,7 @@ if ask "Install + enable the systemd user service now? [y/N]" N; then
 Description=mx4ring daemon
 
 [Service]
+Environment=PYTHONUNBUFFERED=1
 ExecStart=$VENV/bin/python $REPO_DIR/mx4d.py
 Restart=on-failure
 
