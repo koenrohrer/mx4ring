@@ -1,0 +1,7 @@
+{
+  "uuid": "mx4ring@local",
+  "name": "mx4ring Radial Menu",
+  "description": "Shows the mx4ring radial action menu at the pointer when the MX Master 4 menu button is pressed. Requires the mx4ring daemon (mx4d.py) running on the session bus.",
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
+  "url": ""
+}

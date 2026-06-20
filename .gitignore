@@ -1,0 +1,13 @@
+# Python virtualenv (created by setup.sh -- never commit it)
+.venv/
+
+# Byte-compiled
+__pycache__/
+*.pyc
+
+# User config (ships as config.example.py; copied to config.py on first run)
+config.py
+config.py.bak
+
+# Local working notes (not part of the project)
+mx4ring-generalize-prompt.md

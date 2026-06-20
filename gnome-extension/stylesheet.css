@@ -1,0 +1,15 @@
+.mx4-overlay {
+    background-color: rgba(0, 0, 0, 0.35);
+}
+
+.mx4-item {
+    color: #ffffff;
+    font-size: 13pt;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.mx4-selected {
+    color: #ffffff;
+    font-size: 14pt;
+}

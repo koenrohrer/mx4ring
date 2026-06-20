@@ -1,0 +1,13 @@
+# pip packages
+hid          # HID++ transport (needs system libhidapi-hidraw0)
+evdev        # uinput virtual keyboard for remaps
+
+# system packages (install via your distro, NOT pip):
+#   Debian/Ubuntu: sudo apt install libhidapi-hidraw0 python3-gi
+#   Arch:          sudo pacman -S hidapi python-gobject
+#   Fedora:        sudo dnf install hidapi python3-gobject
+#
+# The GNOME Shell extension needs no extra packages.
+#
+# Only if you use the standalone non-GNOME ring.py (wlroots/KDE) instead of the
+# extension, also install: gtk4 + gtk4-layer-shell (e.g. apt install gir1.2-gtk-4.0 gtk4-layer-shell)
