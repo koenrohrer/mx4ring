@@ -23,7 +23,8 @@ import config_loader
 config = config_loader.load()   # ensure config.py exists (from example), then import it
 import haptic
 from controls import ReprogControls
-from hidpp import HidppError, open_device
+from hidpp import (HidppError, LINK_NOT_ESTABLISHED, NOTIF_DEVICE_CONNECTION,
+                   open_device)
 
 BUS_NAME = "dev.mx4ring.Daemon"
 OBJ_PATH = "/dev/mx4ring/Daemon"
@@ -156,7 +157,17 @@ class Daemon:
                 ev = self.dev.read_event(timeout=0.0)   # drain everything ready
                 if not ev:
                     break
-                cids = self.rc.parse_event(*ev)
+                dev_index, feature_index, addr, params = ev
+                if (feature_index == NOTIF_DEVICE_CONNECTION
+                        and dev_index == self.dev.device_index):
+                    # The mouse forgets its divert flags whenever its radio
+                    # sleeps. It usually can't answer a feature request the
+                    # instant the link is back, so defer + retry off the loop.
+                    if not (addr & LINK_NOT_ESTABLISHED):
+                        print("mouse reconnected; re-applying button divert")
+                        GLib.timeout_add(400, self.reassert_divert)
+                    continue
+                cids = self.rc.parse_event(feature_index, addr, params)
                 if cids is None:
                     continue
                 for cid in cids - self.held:             # newly pressed
@@ -186,6 +197,27 @@ class Daemon:
     def on_release(self, cid):
         if cid == config.MENU_BUTTON_CID:
             self.emit("CloseMenu", None)
+
+    def reassert_divert(self, attempts=5):
+        """Re-apply the button diverts, retrying until the mouse answers.
+
+        Divert flags don't survive the mouse's radio sleeping, so without this
+        the menu button silently reverts to its firmware default after the first
+        idle period. The mouse often can't answer a feature request right when
+        the receiver reports the link is back, so on failure we reschedule off
+        the main loop (rather than blocking it) and try again. Re-sending is
+        idempotent. Returns SOURCE_REMOVE so it runs as a one-shot timeout.
+        """
+        try:
+            for cid in self.diverted:
+                self.rc.set_divert(cid, True)
+        except HidppError:
+            if attempts > 1:
+                GLib.timeout_add(500, self.reassert_divert, attempts - 1)
+            else:
+                print("re-divert failed after retries; tap the menu button or "
+                      "restart mx4ring")
+        return GLib.SOURCE_REMOVE
 
     def cleanup(self):
         if self._cleaned:

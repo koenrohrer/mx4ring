@@ -18,6 +18,14 @@ import hid
 SHORT_ID, LONG_ID = 0x10, 0x11
 HIDPP_USAGE_PAGE = 0xFF00
 
+# Receiver (HID++ 1.0) device-connection notification. It lands in the same
+# report slots as a 2.0 feature event: the sub-id 0x41 sits where a feature
+# index would, and its first parameter byte carries the link-status flags.
+# Bit 0x40 set means the link is *not* established (the device slept / went out
+# of range); clear means the device is present and answering.
+NOTIF_DEVICE_CONNECTION = 0x41
+LINK_NOT_ESTABLISHED = 0x40
+
 
 class HidppError(Exception):
     pass
@@ -101,11 +109,14 @@ class HidppDevice:
         os.write(self.fd, _packet(self.device_index, feature_index, addr, data))
 
     def read_event(self, timeout=0.0):
-        """Return (feature_index, addr, params) of the next report, or None."""
+        """Return (device_index, feature_index, addr, params) of the next report,
+        or None. For a 2.0 feature event the second field is the feature index;
+        for a receiver notification it is the sub-id (e.g. NOTIF_DEVICE_CONNECTION).
+        """
         data = _read(self.fd, timeout)
         if not data:
             return None
-        return (data[2], data[3], data[4:])
+        return (data[1], data[2], data[3], data[4:])
 
     def close(self):
         os.close(self.fd)

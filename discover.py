@@ -77,7 +77,7 @@ def main():
         ev = dev.read_event(timeout=0.5)
         if not ev:
             continue
-        cids = rc.parse_event(*ev)
+        cids = rc.parse_event(*ev[1:])
         if cids is None:
             continue
         for cid in cids - held:
